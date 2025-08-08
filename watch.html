@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch & Earn Timer</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f8f9fa;
+    }
+    h1 {
+      font-size: 1.8em;
+      color: #333;
+    }
+    #timer {
+      font-size: 1.2em;
+      margin-top: 15px;
+      color: #007bff;
+    }
+    /* Responsive video */
+    #player {
+      max-width: 100%;
+      aspect-ratio: 16 / 9;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎥 5 brutal truth no one is buying from you</h1>
+
+  <!-- YouTube Player -->
+  <div id="player"></div>
+
+  <!-- Timer -->
+  <h2 id="timer">Watch Time: 0 seconds</h2>
+
+  <!-- YouTube API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    let player;
+    let watchTime = 0;
+    let timerInterval;
+
+    // Load YouTube player
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        height: '315',
+        width: '560',
+        videoId: 'FAwbM3iHL0fdmEBb', // YOUR VIDEO ID HERE
+        playerVars: { 'playsinline': 1 },
+        events: {
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    }
+
+    // Handle play/pause events
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.PLAYING) {
+        if (!timerInterval) {
+          timerInterval = setInterval(() => {
+            watchTime++;
+            document.getElementById("timer").innerText = `Watch Time: ${watchTime} seconds`;
+          }, 1000);
+        }
+      } else {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+  </script>
+
+</body>
+</html>
