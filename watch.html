@@ -2,77 +2,52 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Watch & Earn Timer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Watch & Earn</title>
   <style>
     body {
-      text-align: center;
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background: #f8f9fa;
+      background: #fff;
+      margin: 20px;
+      padding: 0;
+      color: #222;
     }
-    h1 {
-      font-size: 1.8em;
-      color: #333;
-    }
-    #timer {
+    h2 {
       font-size: 1.2em;
-      margin-top: 15px;
-      color: #007bff;
+      color: #444;
     }
-    /* Responsive video */
-    #player {
-      max-width: 100%;
-      aspect-ratio: 16 / 9;
-      margin: auto;
+    #watchTime {
+      font-size: 1em;
+      margin-top: 10px;
+      color: green;
+      font-weight: bold;
+    }
+    iframe {
+      width: 100%;
+      height: 315px;
+      border: none;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
 
-  <h1>🎥 5 brutal truth no one is buying from you</h1>
+  <h2>🎥 5 brutal truths no one is buying from you</h2>
 
-  <!-- YouTube Player -->
-  <div id="player"></div>
+  <iframe id="ytplayer"
+    src="https://www.youtube.com/embed/pIjG-bdkCI8?autoplay=1&mute=1&enablejsapi=1&modestbranding=1&rel=0"
+    allow="autoplay; encrypted-media"
+    allowfullscreen>
+  </iframe>
 
-  <!-- Timer -->
-  <h2 id="timer">Watch Time: 0 seconds</h2>
+  <div id="watchTime">Watch Time: 0 seconds</div>
 
-  <!-- YouTube API -->
-  <script src="https://www.youtube.com/iframe_api"></script>
   <script>
-    let player;
-    let watchTime = 0;
-    let timerInterval;
-
-    // Load YouTube player
-    function onYouTubeIframeAPIReady() {
-      player = new YT.Player('player', {
-        height: '315',
-        width: '560',
-        videoId: 'FAwbM3iHL0fdmEBb', // YOUR VIDEO ID HERE
-        playerVars: { 'playsinline': 1 },
-        events: {
-          'onStateChange': onPlayerStateChange
-        }
-      });
-    }
-
-    // Handle play/pause events
-    function onPlayerStateChange(event) {
-      if (event.data === YT.PlayerState.PLAYING) {
-        if (!timerInterval) {
-          timerInterval = setInterval(() => {
-            watchTime++;
-            document.getElementById("timer").innerText = `Watch Time: ${watchTime} seconds`;
-          }, 1000);
-        }
-      } else {
-        clearInterval(timerInterval);
-        timerInterval = null;
-      }
-    }
+    let secondsWatched = 0;
+    setInterval(() => {
+      secondsWatched++;
+      document.getElementById("watchTime").textContent = "Watch Time: " + secondsWatched + " seconds";
+    }, 1000);
   </script>
 
 </body>
