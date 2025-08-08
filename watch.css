@@ -1,25 +1,85 @@
-body {
-  text-align: center;
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 20px;
-  background: #f8f9fa;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>5 Brutal Truths No One Is Buying From You</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f8f9fa;
+    }
 
-h1 {
-  font-size: 1em;
-  color: #333;
-}
+    h1 {
+      font-size: 1.2em;
+      color: #333;
+      margin-bottom: 5px;
+    }
 
-#timer {
-  font-size: 1.2em;
-  margin-top: 15px;
-  color: #007bff;
-}
+    h2 {
+      font-size: 1em;
+      color: #666;
+      margin-top: 0;
+      font-weight: normal;
+    }
 
-/* Responsive YouTube Player */
-#player {
-  max-width: 100%;
-  aspect-ratio: 16 / 9;
-  margin: auto;
-}
+    #timer {
+      font-size: 1.2em;
+      margin-top: 15px;
+      color: #007bff;
+    }
+
+    #player {
+      max-width: 100%;
+      aspect-ratio: 16 / 9;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>5 Brutal Truths No One Is Buying From You</h1>
+  <h2>Watch & Earn</h2>
+
+  <div id="player"></div>
+  <p id="timer">Watch Time: 0 seconds</p>
+
+  <script>
+    let tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    let firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    let player;
+    let watchTime = 0;
+    let intervalId;
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        height: '360',
+        width: '640',
+        videoId: 'pIjG-bdkCI8', // Correct YouTube video ID
+        events: {
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    }
+
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.PLAYING) {
+        if (!intervalId) {
+          intervalId = setInterval(() => {
+            watchTime++;
+            document.getElementById('timer').textContent = `Watch Time: ${watchTime} seconds`;
+          }, 1000);
+        }
+      } else {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    }
+  </script>
+</body>
+</html>
