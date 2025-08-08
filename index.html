@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>5 Brutal Truths No One Is Buying From You</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch & Earn</title>
   <style>
     body {
       text-align: center;
@@ -12,45 +12,42 @@
       padding: 20px;
       background: #f8f9fa;
     }
+
     h1 {
-      font-size: 1em;
+      font-size: 1.1em;
       color: #333;
-      margin-bottom: 5px;
+      margin-bottom: 10px;
     }
+
     #timer {
-      font-size: 1.2em;
+      font-size: 1.3em;
       margin-top: 15px;
       color: #007bff;
     }
-    iframe {
-      width: 100%;
-      max-width: 560px;
+
+    #player {
+      max-width: 100%;
       aspect-ratio: 16 / 9;
-      border: none;
+      margin: auto;
     }
   </style>
 </head>
 <body>
 
   <h1>5 Brutal Truths No One Is Buying From You</h1>
-  <div id="player-container">
-    <div id="player"></div>
-  </div>
-  <div id="timer">Time Watched: 0 seconds</div>
+  <div id="player"></div>
+  <div id="timer">Watched: 0 seconds</div>
 
   <script>
-    // Load YouTube IFrame API
-    var tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-    var player;
-    var watchTime = 0;
-    var timerInterval = null;
+    let player;
+    let watchTime = 0;
+    let interval;
+    let isPlaying = false;
 
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('player', {
+        height: '360',
+        width: '640',
         videoId: 'pIjG-bdkCI8',
         events: {
           'onStateChange': onPlayerStateChange
@@ -59,18 +56,24 @@
     }
 
     function onPlayerStateChange(event) {
-      if (event.data == YT.PlayerState.PLAYING) {
-        if (!timerInterval) {
-          timerInterval = setInterval(() => {
-            watchTime++;
-            document.getElementById('timer').textContent = `Time Watched: ${watchTime} seconds`;
-          }, 1000);
-        }
-      } else {
-        clearInterval(timerInterval);
-        timerInterval = null;
+      if (event.data === YT.PlayerState.PLAYING && !isPlaying) {
+        isPlaying = true;
+        interval = setInterval(() => {
+          watchTime++;
+          document.getElementById('timer').innerText = `Watched: ${watchTime} seconds`;
+        }, 1000);
+      } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+        isPlaying = false;
+        clearInterval(interval);
       }
     }
+
+    // Load the Iframe API
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
   </script>
+
 </body>
 </html>
