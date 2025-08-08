@@ -1,0 +1,25 @@
+body {
+  text-align: center;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background: #f8f9fa;
+}
+
+h1 {
+  font-size: 1em;
+  color: #333;
+}
+
+#timer {
+  font-size: 1.2em;
+  margin-top: 15px;
+  color: #007bff;
+}
+
+/* Responsive YouTube Player */
+#player {
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  margin: auto;
+}
