@@ -1,54 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Watch & Earn</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>5 Brutal Truths No One Is Buying From You</title>
   <style>
     body {
+      text-align: center;
       font-family: Arial, sans-serif;
-      background: #fff;
-      margin: 20px;
-      padding: 0;
-      color: #222;
+      margin: 0;
+      padding: 20px;
+      background: #f8f9fa;
     }
-    h2 {
-      font-size: 1.2em;
-      color: #444;
-    }
-    #watchTime {
+    h1 {
       font-size: 1em;
-      margin-top: 10px;
-      color: green;
-      font-weight: bold;
+      color: #333;
+      margin-bottom: 5px;
+    }
+    #timer {
+      font-size: 1.2em;
+      margin-top: 15px;
+      color: #007bff;
     }
     iframe {
       width: 100%;
-      height: 315px;
+      max-width: 560px;
+      aspect-ratio: 16 / 9;
       border: none;
-      margin-top: 10px;
     }
   </style>
 </head>
 <body>
 
-  <h2>🎥 5 brutal truths no one is buying from you</h2>
-
-  <iframe id="ytplayer"
-    src="https://www.youtube.com/embed/pIjG-bdkCI8?autoplay=1&mute=1&enablejsapi=1&modestbranding=1&rel=0"
-    allow="autoplay; encrypted-media"
-    allowfullscreen>
-  </iframe>
-
-  <div id="watchTime">Watch Time: 0 seconds</div>
+  <h1>5 Brutal Truths No One Is Buying From You</h1>
+  <div id="player-container">
+    <div id="player"></div>
+  </div>
+  <div id="timer">Time Watched: 0 seconds</div>
 
   <script>
-    let secondsWatched = 0;
-    setInterval(() => {
-      secondsWatched++;
-      document.getElementById("watchTime").textContent = "Watch Time: " + secondsWatched + " seconds";
-    }, 1000);
-  </script>
+    // Load YouTube IFrame API
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
+    var player;
+    var watchTime = 0;
+    var timerInterval = null;
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        videoId: 'pIjG-bdkCI8',
+        events: {
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    }
+
+    function onPlayerStateChange(event) {
+      if (event.data == YT.PlayerState.PLAYING) {
+        if (!timerInterval) {
+          timerInterval = setInterval(() => {
+            watchTime++;
+            document.getElementById('timer').textContent = `Time Watched: ${watchTime} seconds`;
+          }, 1000);
+        }
+      } else {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+  </script>
 </body>
 </html>
