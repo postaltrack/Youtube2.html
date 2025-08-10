@@ -12,19 +12,27 @@
       padding: 20px;
       background: #f8f9fa;
     }
-
     h1 {
-      font-size: 1.1em;
+      font-size: 1.5em;
       color: #333;
-      margin-bottom: 10px;
+      margin-bottom: 5px;
     }
-
+    h2 {
+      font-size: 1em;
+      color: #666;
+      margin-top: 0;
+    }
     #timer {
-      font-size: 1.3em;
+      font-size: 1.2em;
       margin-top: 15px;
       color: #007bff;
     }
-
+    #reward {
+      font-size: 1.5em;
+      color: green;
+      margin-top: 20px;
+    }
+    /* Responsive video player */
     #player {
       max-width: 100%;
       aspect-ratio: 16 / 9;
@@ -34,45 +42,61 @@
 </head>
 <body>
 
-  <h1>5 Brutal Truths No One Is Buying From You</h1>
-  <div id="player"></div>
-  <div id="timer">Watched: 0 seconds</div>
+  <h1>Watch & Earn</h1>
+  <h2>Earn 5$ online just by sharing a link</h2>
 
+  <div id="player"></div>
+  <div id="timer">Watch Time: 0:00</div>
+  <div id="reward">Total Earnings: ₦0</div>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
   <script>
     let player;
-    let watchTime = 0;
-    let interval;
-    let isPlaying = false;
+    let watchTime = 0; // in seconds
+    let timerInterval;
+    let earnings = 0;
+    const rewardInterval = 180; // 3 minutes in seconds
+    const rewardAmount = 200; // ₦200 each time
 
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // Load YouTube Player
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('player', {
-        height: '360',
-        width: '640',
-        videoId: 'pIjG-bdkCI8',
+        height: '315',
+        width: '560',
+        videoId: 'tpmPrx-OvVc', // extracted from your link
+        playerVars: { 'playsinline': 1 },
         events: {
           'onStateChange': onPlayerStateChange
         }
       });
     }
 
+    // Handle play/pause
     function onPlayerStateChange(event) {
-      if (event.data === YT.PlayerState.PLAYING && !isPlaying) {
-        isPlaying = true;
-        interval = setInterval(() => {
-          watchTime++;
-          document.getElementById('timer').innerText = `Watched: ${watchTime} seconds`;
-        }, 1000);
-      } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
-        isPlaying = false;
-        clearInterval(interval);
+      if (event.data === YT.PlayerState.PLAYING) {
+        if (!timerInterval) {
+          timerInterval = setInterval(() => {
+            watchTime++;
+            document.getElementById("timer").innerText = `Watch Time: ${formatTime(watchTime)}`;
+
+            // Give ₦200 every 3 minutes
+            if (watchTime % rewardInterval === 0) {
+              earnings += rewardAmount;
+              document.getElementById("reward").innerText = `Total Earnings: ₦${earnings}`;
+            }
+          }, 1000);
+        }
+      } else {
+        clearInterval(timerInterval);
+        timerInterval = null;
       }
     }
-
-    // Load the Iframe API
-    const tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
   </script>
 
 </body>
