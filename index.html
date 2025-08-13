@@ -1,103 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Watch & Earn</title>
-  <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Watch and Earn</title>
+<style>
     body {
-      text-align: center;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background: #f8f9fa;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: #f9f9f9;
+        margin: 0;
+        padding: 20px;
     }
     h1 {
-      font-size: 1.5em;
-      color: #333;
-      margin-bottom: 5px;
+        color: #222;
+        font-size: 28px;
+        margin-bottom: 20px;
     }
-    h2 {
-      font-size: 1em;
-      color: #666;
-      margin-top: 0;
+    .video-container {
+        position: relative;
+        width: 90vw;
+        max-width: 500px;
+        aspect-ratio: 1 / 1; /* keeps it square */
+        margin: 0 auto;
+        background: #000;
     }
-    #timer {
-      font-size: 1.2em;
-      margin-top: 15px;
-      color: #007bff;
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
     }
-    #reward {
-      font-size: 1.5em;
-      color: green;
-      margin-top: 20px;
+    .stats {
+        margin-top: 20px;
+        font-size: 18px;
+        color: #333;
     }
-    /* Responsive video player */
-    #player {
-      max-width: 100%;
-      aspect-ratio: 16 / 9;
-      margin: auto;
+    .reward {
+        margin-top: 10px;
+        font-weight: bold;
+        color: green;
+        font-size: 20px;
     }
-  </style>
+</style>
 </head>
 <body>
 
-  <h1>Watch & Earn</h1>
-  <h2>Earn 5$ online just by sharing a link</h2>
+<h1>Watch and Earn</h1>
 
-  <div id="player"></div>
-  <div id="timer">Watch Time: 0:00</div>
-  <div id="reward">Total Earnings: ₦0</div>
+<div class="video-container">
+    <iframe id="ytplayer"
+        src="https://www.youtube.com/embed/tpmPrx-OvVc?enablejsapi=1"
+        allow="autoplay; encrypted-media" allowfullscreen>
+    </iframe>
+</div>
 
-  <script src="https://www.youtube.com/iframe_api"></script>
-  <script>
+<div class="stats">
+    Time Watched: <span id="timer">0:00</span>
+</div>
+<div class="reward">
+    Reward: ₦<span id="reward">0</span>
+</div>
+
+<script>
     let player;
-    let watchTime = 0; // in seconds
+    let watchSeconds = 0;
+    let rewardAmount = 0;
     let timerInterval;
-    let earnings = 0;
-    const rewardInterval = 180; // 3 minutes in seconds
-    const rewardAmount = 200; // ₦200 each time
 
-    function formatTime(seconds) {
-      const mins = Math.floor(seconds / 60);
-      const secs = seconds % 60;
-      return `${mins}:${secs.toString().padStart(2, '0')}`;
-    }
-
-    // Load YouTube Player
     function onYouTubeIframeAPIReady() {
-      player = new YT.Player('player', {
-        height: '315',
-        width: '560',
-        videoId: 'tpmPrx-OvVc', // ✅ Your video ID here
-        playerVars: { 'playsinline': 1 },
-        events: {
-          'onStateChange': onPlayerStateChange
-        }
-      });
-    }
-
-    // Handle play/pause
-    function onPlayerStateChange(event) {
-      if (event.data === YT.PlayerState.PLAYING) {
-        if (!timerInterval) {
-          timerInterval = setInterval(() => {
-            watchTime++;
-            document.getElementById("timer").innerText = `Watch Time: ${formatTime(watchTime)}`;
-
-            // Give ₦200 every 3 minutes
-            if (watchTime % rewardInterval === 0) {
-              earnings += rewardAmount;
-              document.getElementById("reward").innerText = `Total Earnings: ₦${earnings}`;
+        player = new YT.Player('ytplayer', {
+            events: {
+                'onStateChange': onPlayerStateChange
             }
-          }, 1000);
-        }
-      } else {
-        clearInterval(timerInterval);
-        timerInterval = null;
-      }
+        });
     }
-  </script>
+
+    function onPlayerStateChange(event) {
+        if (event.data === YT.PlayerState.PLAYING) {
+            if (!timerInterval) {
+                timerInterval = setInterval(updateWatchTime, 1000);
+            }
+        } else {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+    }
+
+    function updateWatchTime() {
+        watchSeconds++;
+        let minutes = Math.floor(watchSeconds / 60);
+        let seconds = watchSeconds % 60;
+        document.getElementById("timer").textContent =
+            `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+        // Calculate reward: ₦100 every 3 minutes
+        rewardAmount = Math.floor(watchSeconds / 180) * 100;
+        document.getElementById("reward").textContent = rewardAmount;
+    }
+
+    // Load YouTube API
+    let tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.body.appendChild(tag);
+</script>
 
 </body>
 </html>
